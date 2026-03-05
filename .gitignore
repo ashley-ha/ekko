@@ -44,6 +44,7 @@ test-voice.mp3
 # Extension config (contains project-specific keys)
 extension/src/config.js
 
+# Generated setup docs (kept locally, not needed in repo)
 COMPLETE_SETUP_GUIDE.md
 ELEVENLABS_TROUBLESHOOTING.md
 START_HERE.md
@@ -51,5 +52,3 @@ SUPABASE_COMPLETE_GUIDE.md
 DEPLOY_VIA_DASHBOARD.md
 WAITLIST_SETUP_GUIDE.md
 VOICE_INTEGRATION.md
-*.md
-.md
