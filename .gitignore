@@ -1,0 +1,55 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment and secrets
+.env
+*.pem
+
+# Supabase CLI temp files
+supabase/.temp/
+
+# Generated output
+.ingest_output/
+
+# IDE configs
+.bolt/
+.cursor/
+
+# Test artifacts
+test/voices/*
+test-voice.mp3
+
+# Extension config (contains project-specific keys)
+extension/src/config.js
+
+COMPLETE_SETUP_GUIDE.md
+ELEVENLABS_TROUBLESHOOTING.md
+START_HERE.md
+SUPABASE_COMPLETE_GUIDE.md
+DEPLOY_VIA_DASHBOARD.md
+WAITLIST_SETUP_GUIDE.md
+VOICE_INTEGRATION.md
+*.md
+.md

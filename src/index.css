@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark mode base styles */
+html {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* Custom scrollbar for dark mode */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* YouTube Player Overlay Hiding - Safe Solution */
+.youtube-player-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hide YouTube's end screen overlay */
+.youtube-player-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: transparent;
+}
+
+/* Hide specific YouTube overlays */
+#youtube-player .ytp-pause-overlay,
+#youtube-player .ytp-endscreen-content,
+#youtube-player .ytp-ce-element,
+#youtube-player .ytp-cued-thumbnail-overlay,
+#youtube-player .ytp-scroll-min {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

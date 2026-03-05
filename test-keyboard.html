@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Shadowing Keyboard Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-area {
+            border: 2px solid #ccc;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f5f5f5;
+        }
+        .key-press {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+        .youtube-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .youtube-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .log {
+            background: #f0f0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>YouTube Shadowing Keyboard Test</h1>
+    
+    <div class="test-area">
+        <h2>Instructions</h2>
+        <p>1. Load a YouTube video below</p>
+        <p>2. Try pressing Space, Left Arrow, and Right Arrow</p>
+        <p>3. Check if the keys are captured correctly</p>
+    </div>
+
+    <div class="test-area">
+        <h2>YouTube Player</h2>
+        <div id="player"></div>
+        <button onclick="loadVideo()">Load Test Video</button>
+    </div>
+
+    <div class="test-area">
+        <h2>Key Press Log</h2>
+        <div id="log" class="log"></div>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <script>
+        let player;
+        let log = document.getElementById('log');
+
+        function addLog(message) {
+            const entry = document.createElement('div');
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function clearLog() {
+            log.innerHTML = '';
+        }
+
+        // YouTube IFrame API
+        function onYouTubeIframeAPIReady() {
+            addLog('YouTube API Ready');
+        }
+
+        function loadVideo() {
+            if (player) {
+                player.destroy();
+            }
+
+            player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: 'M7lc1UVf-VE', // YouTube test video
+                playerVars: {
+                    'playsinline': 1,
+                    'disablekb': 0,
+                    'rel': 0,
+                    'modestbranding': 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            addLog('Player Ready');
+        }
+
+        function onPlayerStateChange(event) {
+            const states = {
+                '-1': 'unstarted',
+                '0': 'ended',
+                '1': 'playing',
+                '2': 'paused',
+                '3': 'buffering',
+                '5': 'video cued'
+            };
+            addLog(`Player State: ${states[event.data] || 'unknown'}`);
+        }
+
+        // Keyboard event handling - multiple approaches
+        function setupKeyboardHandlers() {
+            // Approach 1: Document capture
+            document.addEventListener('keydown', function(e) {
+                if (e.code === 'Space' || e.key === ' ' || e.key === 'Spacebar') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    addLog('✓ Space captured (document)');
+                    if (player && player.playVideo) {
+                        player.playVideo();
+                        setTimeout(() => player.pauseVideo(), 2000);
+                    }
+                } else if (e.code === 'ArrowLeft') {
+                    e.preventDefault();
+                    addLog('✓ Left Arrow captured (document)');
+                } else if (e.code === 'ArrowRight') {
+                    e.preventDefault();
+                    addLog('✓ Right Arrow captured (document)');
+                }
+            }, true); // Capture phase
+
+            // Approach 2: Window capture
+            window.addEventListener('keydown', function(e) {
+                if (e.code === 'Space' && !e.defaultPrevented) {
+                    addLog('✓ Space captured (window)');
+                }
+            }, true);
+
+            // Approach 3: Body direct
+            document.body.addEventListener('keydown', function(e) {
+                if (e.code === 'Space' && !e.defaultPrevented) {
+                    addLog('✓ Space captured (body)');
+                }
+            });
+
+            addLog('Keyboard handlers installed');
+        }
+
+        // Load YouTube API
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.head.appendChild(tag);
+
+        // Setup keyboard handlers when page loads
+        window.addEventListener('load', setupKeyboardHandlers);
+
+        // Add CSS to prevent YouTube overlays
+        const style = document.createElement('style');
+        style.textContent = `
+            .ytp-pause-overlay { display: none !important; }
+            .ytp-scroll-min { display: none !important; }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

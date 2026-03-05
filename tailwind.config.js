@@ -1,0 +1,105 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+    50: '#FDF8FF',
+    100: '#F9F0FF',
+    200: '#F2E0FF',
+    300: '#E8CCFF',
+    400: '#DCB8FF',
+    500: '#CFA4FF',
+    600: '#B88EF0',
+    700: '#A178E0',
+    800: '#8A62D0',
+    900: '#734CC0',
+  },
+  accent: {
+    50: '#FFF9F9',
+    100: '#FFF0F0',
+    200: '#FFE0E0',
+    300: '#FFCCCC',
+    400: '#FFB8B8',
+    500: '#FFA4A4',
+    600: '#FF9090',
+    700: '#E68080',
+    800: '#CC7070',
+    900: '#B36060',
+  },
+  success: {
+    50: '#F8FFF9',
+    100: '#F0F9F0',
+    200: '#E0F2E0',
+    300: '#CCEBCC',
+    400: '#B8E4B8',
+    500: '#A4DDA4',
+    600: '#90C690',
+    700: '#80B680',
+    800: '#70A670',
+    900: '#609660',
+  },
+        info: {
+          50: '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#93C5FD',
+          400: '#60A5FA',
+          500: '#3B82F6',
+          600: '#2563EB',
+          700: '#1D4ED8',
+          800: '#1E40AF',
+          900: '#1E3A8A',
+        },
+        warning: {
+          50: '#FFFBEB',
+          100: '#FEF3C7',
+          200: '#FED7AA',
+          300: '#FDBA74',
+          400: '#FB923C',
+          500: '#F97316',
+          600: '#EA580C',
+          700: '#C2410C',
+          800: '#9A3412',
+          900: '#7C2D12',
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      animation: {
+        'fade-in-up': 'fadeInUp 0.6s ease-out',
+        'fade-in': 'fadeIn 0.6s ease-out',
+        'pulse-soft': 'pulseSoft 2s ease-in-out infinite',
+        'float': 'float 3s ease-in-out infinite',
+      },
+      keyframes: {
+        fadeInUp: {
+          '0%': {
+            opacity: '0',
+            transform: 'translateY(30px)',
+          },
+          '100%': {
+            opacity: '1',
+            transform: 'translateY(0)',
+          },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        pulseSoft: {
+          '0%, 100%': { opacity: '0.8' },
+          '50%': { opacity: '1' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+      },
+    },
+  },
+  plugins: [],
+};

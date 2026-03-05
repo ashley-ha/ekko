@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ekko - Language Learning Theater Mode</title>
+  <link rel="stylesheet" href="player.css">
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header class="player-header">
+      <div class="header-left">
+        <button id="close-btn" class="icon-btn" title="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+        <h1 class="app-title">Ekko Language Learning</h1>
+      </div>
+      
+      <div class="header-right">
+        <!-- Language Direction Toggle -->
+        <div class="language-toggle">
+          <select id="language-direction" class="language-select">
+            <option value="en-ko">English → Korean</option>
+            <option value="ko-en">Korean → English</option>
+          </select>
+        </div>
+        
+        <!-- Settings Button -->
+        <button id="settings-btn" class="icon-btn" title="Settings">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="player-main">
+      <!-- Video Player Container -->
+      <div class="video-container">
+        <div id="youtube-player"></div>
+        
+        <!-- Loading Spinner -->
+        <div id="loading-spinner" class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Loading video...</p>
+        </div>
+      </div>
+
+      <!-- Controls Bar -->
+      <div class="controls-bar">
+        <div class="controls-left">
+          <!-- Previous Segment -->
+          <button id="prev-segment" class="control-btn" title="Previous segment (←)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+          
+          <!-- Play/Replay Current Segment -->
+          <button id="replay-segment" class="control-btn primary" title="Replay segment (Space)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/>
+            </svg>
+            <span>Replay</span>
+          </button>
+          
+          <!-- Next Segment -->
+          <button id="next-segment" class="control-btn" title="Next segment (→)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+            </svg>
+          </button>
+        </div>
+
+        <div class="controls-center">
+          <!-- Segment Progress -->
+          <div class="segment-info">
+            <span id="current-segment">1</span>
+            <span class="separator">/</span>
+            <span id="total-segments">0</span>
+          </div>
+        </div>
+
+        <div class="controls-right">
+          <!-- Speed Control -->
+          <div class="speed-control">
+            <label for="speed-select">Speed:</label>
+            <select id="speed-select" class="speed-select">
+              <option value="0.5">0.5x</option>
+              <option value="0.75">0.75x</option>
+              <option value="1" selected>1x</option>
+              <option value="1.25">1.25x</option>
+              <option value="1.5">1.5x</option>
+            </select>
+          </div>
+          
+          <!-- Auto-repeat Toggle -->
+          <button id="auto-repeat" class="control-btn toggle active" title="Auto-repeat">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mode Toggle -->
+      <div class="mode-toggle">
+        <button id="practice-mode-btn" class="mode-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+          AI Practice
+        </button>
+        <button id="transcript-mode-btn" class="mode-btn active">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+          </svg>
+          Transcript
+        </button>
+      </div>
+
+      <!-- Transcript Container -->
+      <div class="transcript-container" id="transcript-container">
+        <div class="transcript-header">
+          <h2>Transcript</h2>
+          <button id="toggle-translation" class="toggle-btn active">
+            Show Translation
+          </button>
+        </div>
+        
+        <div id="transcript-list" class="transcript-list">
+          <!-- Transcript segments will be inserted here -->
+        </div>
+      </div>
+
+      <!-- AI Practice Container -->
+      <div class="ai-practice-container hidden" id="ai-practice-container">
+        <div class="practice-header">
+          <h2>AI Practice</h2>
+          <div class="practice-progress">
+            <span id="practice-progress-text">Ready to start</span>
+            <div class="progress-bar">
+              <div id="practice-progress-fill" class="progress-fill"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Practice States -->
+        <div id="practice-setup" class="practice-state">
+          <div class="practice-info">
+            <p>Test your comprehension with AI-generated questions based on this video's content.</p>
+            <button id="start-practice-btn" class="primary-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              Start Practice
+            </button>
+          </div>
+        </div>
+
+        <div id="practice-loading" class="practice-state hidden">
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Generating questions...</p>
+          </div>
+        </div>
+
+        <div id="practice-question" class="practice-state hidden">
+          <div class="question-card">
+            <div class="question-header">
+              <span id="question-difficulty" class="difficulty-badge">medium</span>
+              <span id="question-number">Question 1 of 5</span>
+            </div>
+            <div class="question-text" id="question-text">
+              <!-- Question will be inserted here -->
+            </div>
+            <div class="answer-section">
+              <textarea 
+                id="user-answer" 
+                placeholder="Type your answer here..."
+                rows="4"
+              ></textarea>
+              <button id="submit-answer-btn" class="primary-btn">
+                Submit Answer
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="practice-feedback" class="practice-state hidden">
+          <div class="feedback-card">
+            <div class="feedback-header">
+              <div id="feedback-result" class="feedback-result">
+                <!-- Correct/Incorrect indicator -->
+              </div>
+              <div id="feedback-score" class="feedback-score">
+                <!-- Score display -->
+              </div>
+            </div>
+            <div class="user-answer-display">
+              <strong>Your Answer:</strong>
+              <p id="display-user-answer"></p>
+            </div>
+            <div class="feedback-text">
+              <strong>Feedback:</strong>
+              <p id="feedback-message"></p>
+            </div>
+            <button id="next-question-btn" class="primary-btn">
+              Next Question
+            </button>
+          </div>
+        </div>
+
+        <div id="practice-complete" class="practice-state hidden">
+          <div class="completion-card">
+            <div class="completion-header">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="currentColor" class="success-icon">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              <h3>Practice Complete!</h3>
+            </div>
+            <p>Great job completing all the questions for this video.</p>
+            <button id="restart-practice-btn" class="primary-btn">
+              Practice Again
+            </button>
+          </div>
+        </div>
+
+        <div id="practice-error" class="practice-state hidden">
+          <div class="error-card">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="error-icon">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <h3>Error</h3>
+            <p id="practice-error-message">Something went wrong. Please try again.</p>
+            <button id="retry-practice-btn" class="primary-btn">
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Config and Main Player Script -->
+  <script src="../config.js"></script>
+  <script src="player.js"></script>
+</body>
+</html>

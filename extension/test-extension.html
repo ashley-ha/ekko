@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Ekko Extension</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #005a87;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f5f5f5;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <h1>Ekko Extension Test Page</h1>
+    <p>This page helps test the extension functionality outside of YouTube.</p>
+    
+    <div class="test-section">
+        <h3>Extension Detection</h3>
+        <button onclick="testExtensionLoaded()">Test Extension Loaded</button>
+        <div id="extension-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Background Script Communication</h3>
+        <button onclick="testBackgroundPing()">Test Background Ping</button>
+        <div id="ping-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Video ID Extraction</h3>
+        <input type="text" id="test-url" placeholder="Enter YouTube URL to test" value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" style="width: 400px; padding: 5px;">
+        <button onclick="testVideoIdExtraction()">Test Video ID</button>
+        <div id="video-id-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Transcript Fetch Test</h3>
+        <input type="text" id="test-video-id" placeholder="Enter video ID" value="dQw4w9WgXcQ" style="width: 200px; padding: 5px;">
+        <button onclick="testTranscriptFetch()">Test Transcript</button>
+        <div id="transcript-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Question Generation Test</h3>
+        <input type="text" id="question-video-id" placeholder="Enter video ID" value="dQw4w9WgXcQ" style="width: 200px; padding: 5px;">
+        <button onclick="testQuestionGeneration()">Test Questions</button>
+        <div id="questions-result" class="result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Answer Evaluation Test</h3>
+        <input type="text" id="eval-video-id" placeholder="Video ID" value="dQw4w9WgXcQ" style="width: 150px; padding: 5px;">
+        <input type="text" id="eval-question" placeholder="Test question" value="What is this video about?" style="width: 200px; padding: 5px;">
+        <input type="text" id="eval-answer" placeholder="Your answer" value="It's a music video" style="width: 150px; padding: 5px;">
+        <button onclick="testAnswerEvaluation()">Test Evaluation</button>
+        <div id="evaluation-result" class="result"></div>
+    </div>
+
+    <script>
+        // Test if extension is loaded
+        function testExtensionLoaded() {
+            const result = document.getElementById('extension-result');
+            if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id) {
+                result.className = 'result success';
+                result.textContent = `Extension loaded! ID: ${chrome.runtime.id}`;
+            } else {
+                result.className = 'result error';
+                result.textContent = 'Extension not detected. Make sure it\'s installed and enabled.';
+            }
+        }
+
+        // Test background script ping
+        function testBackgroundPing() {
+            const result = document.getElementById('ping-result');
+            
+            if (typeof chrome === 'undefined' || !chrome.runtime) {
+                result.className = 'result error';
+                result.textContent = 'Chrome extension API not available';
+                return;
+            }
+
+            result.textContent = 'Pinging background script...';
+            
+            chrome.runtime.sendMessage({type: 'PING'}, (response) => {
+                if (chrome.runtime.lastError) {
+                    result.className = 'result error';
+                    result.textContent = `Error: ${chrome.runtime.lastError.message}`;
+                } else {
+                    result.className = 'result success';
+                    result.textContent = `Ping successful! Response: ${JSON.stringify(response)}`;
+                }
+            });
+        }
+
+        // Test video ID extraction
+        function testVideoIdExtraction() {
+            const url = document.getElementById('test-url').value;
+            const result = document.getElementById('video-id-result');
+            
+            // Simple video ID extraction logic (same as extension)
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?#]+)/,
+                /youtube\.com\/shorts\/([^&?#]+)/,
+            ];
+
+            let videoId = null;
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match && match[1]) {
+                    const extractedId = match[1].trim();
+                    if (extractedId.length >= 10 && extractedId.length <= 12 && /^[a-zA-Z0-9_-]+$/.test(extractedId)) {
+                        videoId = extractedId;
+                        break;
+                    }
+                }
+            }
+
+            if (videoId) {
+                result.className = 'result success';
+                result.textContent = `Video ID extracted: ${videoId}`;
+            } else {
+                result.className = 'result error';
+                result.textContent = 'Could not extract video ID from URL';
+            }
+        }
+
+        // Test transcript fetch
+        function testTranscriptFetch() {
+            const videoId = document.getElementById('test-video-id').value;
+            const result = document.getElementById('transcript-result');
+            
+            if (!videoId) {
+                result.className = 'result error';
+                result.textContent = 'Please enter a video ID';
+                return;
+            }
+
+            result.textContent = 'Fetching transcript...';
+            
+            chrome.runtime.sendMessage({
+                type: 'FETCH_YOUTUBE_TRANSCRIPT',
+                videoId: videoId
+            }, (response) => {
+                if (chrome.runtime.lastError) {
+                    result.className = 'result error';
+                    result.textContent = `Error: ${chrome.runtime.lastError.message}`;
+                } else if (response.error) {
+                    result.className = 'result error';
+                    result.textContent = `API Error: ${response.error}`;
+                } else {
+                    result.className = 'result success';
+                    result.textContent = `Transcript fetched! Segments: ${response.transcript ? response.transcript.length : 0}`;
+                }
+            });
+        }
+
+        // Test question generation
+        function testQuestionGeneration() {
+            const videoId = document.getElementById('question-video-id').value;
+            const result = document.getElementById('questions-result');
+            
+            if (!videoId) {
+                result.className = 'result error';
+                result.textContent = 'Please enter a video ID';
+                return;
+            }
+
+            result.textContent = 'Generating questions...';
+            
+            chrome.runtime.sendMessage({
+                type: 'GENERATE_QUESTIONS',
+                videoId: videoId
+            }, (response) => {
+                if (chrome.runtime.lastError) {
+                    result.className = 'result error';
+                    result.textContent = `Error: ${chrome.runtime.lastError.message}`;
+                } else if (response.error) {
+                    result.className = 'result error';
+                    result.textContent = `API Error: ${response.error}`;
+                } else {
+                    result.className = 'result success';
+                    result.textContent = `Questions generated! Count: ${response.questions ? response.questions.length : 0}`;
+                }
+            });
+        }
+
+        // Test answer evaluation
+        function testAnswerEvaluation() {
+            const videoId = document.getElementById('eval-video-id').value;
+            const question = document.getElementById('eval-question').value;
+            const userAnswer = document.getElementById('eval-answer').value;
+            const result = document.getElementById('evaluation-result');
+            
+            if (!videoId || !question || !userAnswer) {
+                result.className = 'result error';
+                result.textContent = 'Please fill in all fields';
+                return;
+            }
+
+            result.textContent = 'Evaluating answer...';
+            
+            chrome.runtime.sendMessage({
+                type: 'EVALUATE_ANSWER',
+                videoId: videoId,
+                question: question,
+                userAnswer: userAnswer
+            }, (response) => {
+                if (chrome.runtime.lastError) {
+                    result.className = 'result error';
+                    result.textContent = `Error: ${chrome.runtime.lastError.message}`;
+                } else if (response.error) {
+                    result.className = 'result error';
+                    result.textContent = `API Error: ${response.error}`;
+                } else {
+                    result.className = 'result success';
+                    result.textContent = `Evaluation complete! Score: ${response.score}, Correct: ${response.is_correct}`;
+                }
+            });
+        }
+
+        // Auto-test extension loading when page loads
+        window.addEventListener('load', () => {
+            setTimeout(testExtensionLoaded, 500);
+        });
+    </script>
+</body>
+</html>
